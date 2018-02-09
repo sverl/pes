@@ -1,0 +1,161 @@
+\RequirePackage{expl3}
+\ProvidesExplPackage{pes}{2018/02/09}{0.1}{Potential energy surfaces.}
+
+\usepackage{environ}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+
+% Styles
+\tikzset{lvl/.style={minimum~width=8mm}}
+\tikzset{lvllin/.style={ultra~thick}}
+\tikzset{lvllbl/.style={node~distance=3mm}}
+
+\tikzset{GS/.style={lvl}}
+\tikzset{GSlin/.style={lvllin}}
+\tikzset{GSlbl/.style={lvllbl}}
+
+\tikzset{TS/.style={lvl}}
+\tikzset{TSlbl/.style={lvllbl}}
+\tikzset{TSlin/.style={lvllin}}
+
+\tikzset{edg/.style={}}
+
+\prg_new_conditional:Npnn \tl_if_either_empty_ii:nn #1 #2 {p,T,F,TF} {
+	\tl_if_empty:nTF {#1} {\prg_return_true:} {
+		\tl_if_empty:nTF {#2} {\prg_return_true:} {\prg_return_false:} 
+	}
+}
+
+\cs_new:Npn \clist_zip_ii:nn #1 #2 {
+	\clist_zip_ii_aux:nw {} #1, \q_mark, #2, \q_mark.
+}
+\cs_new:Npn \clist_zip_ii_aux:nw #1 #2, #3 \q_mark, #4, #5 \q_mark. {
+	\tl_if_either_empty_ii:nnTF {#3} {#5} {
+		#1 {#2}{#4}
+	}{
+		\clist_zip_ii_aux:nw {#1 {#2}{#4},} #3 \q_mark, #5 \q_mark.
+	}
+}
+\cs_generate_variant:Nn \clist_zip_ii:nn {VV}
+
+\prg_new_conditional:Npnn \tl_if_either_empty_iii:nnn #1 #2 #3 {p,T,F,TF} {
+	\tl_if_empty:nTF {#1} {\prg_return_true:} {
+		\tl_if_empty:nTF {#2} {\prg_return_true:} {
+			\tl_if_empty:nTF {#3} {\prg_return_true:} {
+				\prg_return_false:
+			} 
+		} 
+	}
+}
+
+\cs_new:Npn \clist_map_zip_ii:nnN #1 #2 #3 {
+	\clist_map_zip_ii_aux:Nnw #3 {} #1, \q_mark, #2, \q_mark.
+}
+\cs_new:Npn \clist_map_zip_ii_aux:Nnw #1 #2 #3, #4 \q_mark, #5, #6 \q_mark. {
+	\tl_if_either_empty_ii:nnTF {#4} {#6} {
+		#2 #1{#3}{#5}
+	}{
+		\clist_map_zip_ii_aux:Nnw #1 {#2 #1{#3}{#5}} #4 \q_mark, #6 \q_mark.
+	}
+}
+\cs_generate_variant:Nn \clist_map_zip_ii:nnN {VV}
+
+\cs_new:Npn \clist_map_zip_iii:nnnN #1 #2 #3 #4 {
+	\clist_map_zip_iii_aux:Nnw #4 {} #1, \q_mark, #2, \q_mark, #3, \q_mark.
+}
+%                                      \f    v11 v12         v21 v22         v31 v32
+\cs_new:Npn \clist_map_zip_iii_aux:Nnw #1 #2 #3, #4 \q_mark, #5, #6 \q_mark, #7, #8 \q_mark. {
+	\tl_if_either_empty_iii:nnnTF {#4} {#6} {#8} {
+		#2 #1{#3}{#5}{#7}
+	}{
+		\clist_map_zip_iii_aux:Nnw #1 {#2 #1{#3}{#5}{#7}} #4 \q_mark, #6 \q_mark, #8 \q_mark.
+	}
+}
+\cs_generate_variant:Nn \clist_map_zip_iii:nnnN {VVV}
+
+
+\clist_new:N \g_labels
+\clist_new:N \g_coords
+\clist_new:N \g_energies
+
+\clist_new:N \g_edg_west
+\clist_new:N \g_edg_east
+
+%\clist_put_right:Nn \g_labels {GS1, GS2, GS3}
+%\clist_put_right:Nn \g_coords {0.1, 0.2, 0.3}
+%\clist_put_right:Nn \g_energies {0.1, 0.2, 0.3}
+
+\cs_new:Npn \pes_draw_lvl:nnn #1 #2 #3 {
+	\node~(#1)~at~(axis~cs\c_colon_str#2,#3)~[GS] { }; \par
+	\draw~[GSlin]~(#1.west)~--~(#1.east); \par
+	\node~[GSlbl,~below~of=#1]~{#1}; \par
+}
+\cs_generate_variant:Nn \pes_draw_lvl:nnn {xxx}
+
+\cs_new:Npn \pes_draw_edg:nn #1 #2 {
+	\draw~[edg]~(#1.east)~--~(#2.west); \par
+}
+\cs_generate_variant:Nn \pes_draw_edg:nn {xx}
+
+\cs_new:Npn \pes_draw {
+	\clist_map_zip_iii:VVVN \g_labels 
+	\g_coords 
+	\g_energies
+	\pes_draw_lvl:xxx
+	
+	\clist_map_zip_ii:VVN \g_edg_west 
+	\g_edg_east
+	\pes_draw_edg:xx
+} 
+
+\tl_new:N \pes_objects_tl
+\cs_new_protected:Npn \pes_parse:n #1 {
+	\tl_set:Nn \pes_objects_tl { #1 }
+	\tl_remove_all:Nn \pes_objects_tl { \par }
+	\tl_replace_all:Nnn \pes_objects_tl { lvl ~ } { \pes_parse_lvl:w }
+	\tl_replace_all:Nnn \pes_objects_tl { edg ~ } { \pes_parse_edg:w }
+	\tl_use:N \pes_objects_tl 
+}
+\cs_generate_variant:Nn \pes_parse:n { V }
+
+\cs_new_protected:Npn \pes_parse_lvl:w #1 ~ #2 ~ #3 ; {
+	\clist_gpush:Nn \g_labels {#1}
+	\clist_gpush:Nn \g_coords {#2}
+	\clist_gpush:Nn \g_energies {#3}
+}
+
+\cs_new_protected:Npn \pes_parse_edg:w #1 ~ #2 ; {
+	\clist_gpush:Nn \g_edg_west {#1}
+	\clist_gpush:Nn \g_edg_east {#2}
+}                     
+
+\tl_new:N \pes_xmin
+\tl_new:N \pes_xmax
+\tl_new:N \pes_ymin
+\tl_new:N \pes_ymax
+
+\tl_new:N \pes_xpad
+\tl_new:N \pes_ypad
+
+\NewEnviron{pes}[1][] {
+	\pes_parse:V \BODY
+	
+	\tl_set:Nn \pes_xmin {\fp_eval:n{min(\clist_use:Nn \g_coords {,})}}
+	\tl_set:Nn \pes_xmax {\fp_eval:n{max(\clist_use:Nn \g_coords {,})}}
+	\tl_set:Nn \pes_ymin {\fp_eval:n{min(\clist_use:Nn \g_energies {,})}}
+	\tl_set:Nn \pes_ymax {\fp_eval:n{max(\clist_use:Nn \g_energies {,})}}
+	
+	\tl_set:Nn \pes_xpad {(\pes_xmax-\pes_xmin)*.2}
+	\tl_set:Nn \pes_ypad {(\pes_ymax-\pes_ymin)*.2}
+	
+	\begin{tikzpicture}			
+	\begin{axis}[xmin=\pes_xmin-\pes_xpad,
+	xmax=\pes_xmax+\pes_xpad,
+	ymin=\pes_ymin-\pes_ypad,
+	ymax=\pes_ymax+\pes_ypad]
+	
+	\pes_draw
+	
+	\end{axis}
+	\end{tikzpicture}	
+}
