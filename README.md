@@ -6,7 +6,7 @@ The `pes` package defines an environment for easy typesetting og potential energ
 Installation
 ------------
 
-The package is supplied in `.dtx` format. To unpack the `.dtx`, run `tex pes.dtx` to extract the package whereas `latex pes.dtx` will extract it and also typeset the documentation.
+The package is supplied in `.dtx` format. To unpack the `.dtx`, run `make all`.
 
 The package requires LaTeX3 support as provided in the `l3kernel` and `l3packages` bundles. Both of these are available on [CTAN](https://www.ctan.org/) as ready-to-install `.zip` files.
 

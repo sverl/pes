@@ -11,7 +11,7 @@ The `pes` package defines an environment for easy typesetting og potential energ
 Installation
 ------------
 
-The package is supplied in `.dtx` format. To unpack the `.dtx`, run `tex pes.dtx` to extract the package whereas `latex pes.dtx` will extract it and also typeset the documentation.
+The package is supplied in `.dtx` format. To unpack the `.dtx`, run `make all`.
 
 The package requires LaTeX3 support as provided in the `l3kernel` and `l3packages` bundles. Both of these are available on [CTAN](https://www.ctan.org/) as ready-to-install `.zip` files. 
 
@@ -49,10 +49,12 @@ version of this license is in the file:
 This work is "maintained" (as per LPPL maintenance status) by
   Sverre Loeyland.
 
-This work consists of the file  pes.dtx
+This work consists of the files pes.dtx and
+                                makefile
           and the derived files pes.ins,
-                                pes.pdf and
-                                pes.sty.
+                                pes.pdf,
+                                pes.sty and
+                                README.md
 ---------------------------------------------------------------
 \endpreamble
 \usedir{tex/latex/pes}
@@ -217,7 +219,7 @@ This work consists of the file  pes.dtx
 % 
 %\GetFileInfo{\jobname.sty} 
 % 
-%\changes{v1.0}{<+date+>}{Initial public release}
+%\changes{v1.0}{2018/06/07}{Initial public release}
 %
 %\title{^^A
 %  \pkg{pes} --- Potential energy surface diagrams^^A
@@ -365,7 +367,7 @@ This work consists of the file  pes.dtx
 % Version data and required packages and setup.
 %    \begin{macrocode}
 \ProvidesExplPackage
-  {pes} {<+date+>} {1.0}
+  {pes} {2018/06/07} {1.0}
   {Potential energy surface diagrams}
 
 \RequirePackage{siunitx}

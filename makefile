@@ -2,7 +2,6 @@
 
 all: pes.pdf
 
-doc: *.pdf
 
 README: pes.dtx
 	@tex pes.dtx
@@ -20,4 +19,4 @@ README: pes.dtx
 	@dvipdf $*.dvi $*.pdf
 
 clean:
-	@$(RM) *.aux *.glo *.gls *.hd *.idx *.ilg *.ind *.ins *.log *.out *.tmp *.toc pes-pes.bib
+	@$(RM) *.aux *.glo *.gls *.hd *.idx *.ilg *.ind *.log *.out *.tmp *.toc pes-pes.bib
