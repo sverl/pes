@@ -2,3 +2,13 @@
 *.log
 *.pdf
 *.synctex*
+*.glo
+*.gls
+*.hd
+*.idx
+*.ilg
+*.ind
+*.ins
+*.out
+*.tmp
+*.toc

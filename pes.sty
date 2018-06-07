@@ -1,106 +1,131 @@
-\RequirePackage{expl3}
-\ProvidesExplPackage{pes}{2018/02/09}{0.1}{Potential energy surfaces.}
-
-\RequirePackage{l3keys2e}
+%%
+%% This is file `pes.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pes.dtx  (with options: `package')
+%% ---------------------------------------------------------------
+%% pes --- Potential energy surface diagrams
+%% Maintained by Sverre Loeyland
+%% Contact: https://github.com/sverl/pes
+%% Released under the LaTeX Project Public License v1.3c or later
+%% See https://www.latex-project.org/lppl.txt
+%% ---------------------------------------------------------------
+%% Copyright (C) 2018 by
+%%   Sverre Loeyland https://github.com/sverl/pes
+%% 
+%% It may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License (LPPL), either version 1.3c of
+%% this license or (at your option) any later version. The latest
+%% version of this license is in the file:
+%% 
+%%    https://www.latex-project.org/lppl.txt
+%% 
+%% This work is "maintained" (as per LPPL maintenance status) by
+%%   Sverre Loeyland.
+%% 
+%% This work consists of the file  pes.dtx
+%%           and the derived files pes.ins,
+%%                                 pes.pdf and
+%%                                 pes.sty.
+%% ---------------------------------------------------------------
+\RequirePackage{xparse}
+\ProvidesExplPackage
+  {pes} {<+date+>} {1.0}
+  {Potential energy surface diagrams}
 
 \RequirePackage{siunitx}
 \DeclareSIUnit[number-unit-product = {}] \Hartree {Ha}
 
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.15}
-
-% Module keys
 \keys_define:nn {pes} {
-	env .tl_set:N = \pes_env,
-	env .initial:n = {figure},
-	
-	width .tl_set:N = \pes_width,
-	width .initial:n = {\axisdefaultwidth},
-	
-	height .tl_set:N = \pes_height,
-	height .initial:n = {\axisdefaultheight},
-	
-	xlabel .tl_set:N = \pes_xlabel,
-	xlabel .initial:n = {reaction~coordinate},
-	
-	ylabel .tl_set:N = \pes_ylabel,
-	ylabel .initial:n = {$E/\si{\Hartree}$},	
+  env .tl_set:N = \__pes_env,
+  env .initial:n = {figure},
+
+  width .tl_set:N = \__pes_width,
+  width .initial:n = {\axisdefaultwidth},
+
+  height .tl_set:N = \__pes_height,
+  height .initial:n = {\axisdefaultheight},
+
+  xlabel .tl_set:N = \__pes_xlabel,
+  xlabel .initial:n = {reaction~coordinate},
+
+  ylabel .tl_set:N = \__pes_ylabel,
+  ylabel .initial:n = {$E/\si{\Hartree}$},
 }
 \ProcessKeysOptions{pes}
-
-% Environment keys
 \keys_define:nn {pes/env} {
-	env .tl_set:N = \pes_env,
-	env .default:n = {figure},
-	
-	width .tl_set:N = \pes_width,
-	width .default:n = {\axisdefaultwidth},
-	
-	height .tl_set:N = \pes_height,
-	height .default:n = {\axisdefaultheight},
-	
-	xlabel .tl_set:N = \pes_xlabel,
-	xlabel .default:n = {reaction~coordinate},
-	
-	ylabel .tl_set:N = \pes_ylabel,
-	ylabel .default:n = {$E/\si{\Hartree}$},
-	
-	caption .tl_set:N = \pes_caption,
-	
-	label .tl_set:N = \pes_label,
-	
-	zero .tl_set:N = \pes_zero,
-	zero .initial:n = {0},
-}
+  env .choice:,
+  env / none .code:n = { \tl_set_eq:NN \__pes_env \c__pes_env_none },
+  env / .code:n = { \tl_set_eq:NN \__pes_env figure },
+  env / unknown .code:n = { \tl_set_eq:NN \__pes_env #1 },
 
-% Define environment
-\NewDocumentEnvironment{pes}{O{}}{	
-	% Process the environment keys
-	\keys_set:nn {pes/env}{#1}
-	
-	\begin{\pes_env}
-		\centering
-		\begin{tikzpicture}
-		\begin{axis}[width=\pes_width,
-		height=\pes_height,
-		axis~lines=left,
-		enlarge~x~limits=0.2,
-		enlarge~y~limits=0.2,
-		xlabel=\pes_xlabel,
-		ylabel=\pes_ylabel,
-		xmajorticks=false]
-	}{
-		\end{axis}
-		\end{tikzpicture}
-		
-		\tl_if_empty:NF \pes_caption {\caption{\pes_caption}}
-		\tl_if_empty:NF \pes_label {\label{\pes_label}}
-		
-	\end{\pes_env}
-}
+  width .tl_set:N = \__pes_width,
+  width .default:n = {\axisdefaultwidth},
 
-% Styles
+  height .tl_set:N = \__pes_height,
+  height .default:n = {\axisdefaultheight},
+
+  xlabel .tl_set:N = \__pes_xlabel,
+  xlabel .default:n = {reaction~coordinate},
+
+  ylabel .tl_set:N = \__pes_ylabel,
+  ylabel .default:n = {$E/\si{\Hartree}$},
+
+  caption .tl_set:N = \__pes_caption,
+
+  label .tl_set:N = \__pes_label,
+
+  zero .tl_set:N = \__pes_zero,
+  zero .initial:n = {0},
+}
+\NewDocumentEnvironment{pes}{O{}}{
+  \keys_set:nn {pes/env}{#1}
+
+  \tl_if_eq:NNTF \__pes_env \__pes_env_none {} {
+    \begin{\__pes_env}
+    \centering
+  }
+    \begin{tikzpicture}
+    \begin{axis}[width=\__pes_width,
+    height=\__pes_height,
+    axis~lines=left,
+    enlarge~x~limits=0.2,
+    enlarge~y~limits=0.2,
+    xlabel=\__pes_xlabel,
+    ylabel=\__pes_ylabel,
+    xmajorticks=false]
+  }{
+    \end{axis}
+    \end{tikzpicture}
+
+    \tl_if_empty:NF \__pes_caption {\caption{\__pes_caption}}
+    \tl_if_empty:NF \__pes_label {\label{\__pes_label}}
+
+    \tl_if_eq:NNTF \__pes_env \__pes_env_none {} {
+      \end{\__pes_env}
+   }
+}
 \tikzset{coord/.style={mark=none}}
-
 \tikzset{level/.style={minimum~width=8mm}}
 \tikzset{levelline/.style={ultra~thick}}
 \tikzset{levellabel/.style={node~distance=1em}}
-
-\tikzset{edge/.style={}}
-
-\tikzset{graphics/.style={above}}
-
-% Environment commands
 \NewDocumentCommand{\level}{mmmo}{
-	\addplot[coord]coordinates{(#2,#3-\pes_zero)}
-	node(#1)[level]{}
-	\IfValueT{#4}{
-		node[graphics]{#4}
-	};
-	\draw[levelline](#1.west)--(#1.east);
-	\node[levellabel,below~of=#1]{#1};
+  \addplot[coord]coordinates{(#2,#3-\__pes_zero)}
+  node(#1)[level]{}
+  \IfValueT{#4}{
+    node[graphics]{#4}
+  };
+  \draw[levelline](#1.west)--(#1.east);
+  \node[levellabel,below~of=#1]{#1};
 }
-
-\NewDocumentCommand{\edge}{mm}{	
-	\draw[edge](#1.east)--(#2.west);
+\tikzset{edge/.style={}}
+\NewDocumentCommand{\edge}{mm}{
+  \draw[edge](#1.east)--(#2.west);
 }
+\endinput
+%%
+%% End of file `pes.sty'.

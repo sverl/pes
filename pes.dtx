@@ -1,0 +1,534 @@
+% \iffalse meta-comment
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+pes - Potential energy surface diagrams
+===================================================
+
+The `pes` package defines an environment for easy typesetting og potential energy surface diagrams. The packages has a simple command for adding ground states and transition states. The package is very simple which makes it easy to extend to more specific or advanced uses.
+
+Installation
+------------
+
+The package is supplied in `.dtx` format. To unpack the `.dtx`, run `tex pes.dtx` to extract the package whereas `latex pes.dtx` will extract it and also typeset the documentation.
+
+The package requires LaTeX3 support as provided in the `l3kernel` and `l3packages` bundles. Both of these are available on [CTAN](https://www.ctan.org/) as ready-to-install `.zip` files. 
+
+The `.dtx` file has been adapted from Joseph Wright's [`notes2bib`](https://ctan.org/tex-archive/macros/latex/contrib/notes2bib) package.
+%</readme>
+%<*internal>
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input l3docstrip.tex
+\keepsilent
+\askforoverwritefalse
+\preamble
+---------------------------------------------------------------
+pes --- Potential energy surface diagrams
+Maintained by Sverre Loeyland
+Contact: https://github.com/sverl/pes
+Released under the LaTeX Project Public License v1.3c or later
+See https://www.latex-project.org/lppl.txt
+---------------------------------------------------------------
+Copyright (C) 2018 by
+  Sverre Loeyland https://github.com/sverl/pes
+
+It may be distributed and/or modified under the conditions of
+the LaTeX Project Public License (LPPL), either version 1.3c of
+this license or (at your option) any later version. The latest
+version of this license is in the file:
+
+   https://www.latex-project.org/lppl.txt
+
+This work is "maintained" (as per LPPL maintenance status) by
+  Sverre Loeyland.
+
+This work consists of the file  pes.dtx
+          and the derived files pes.ins,
+                                pes.pdf and
+                                pes.sty.
+---------------------------------------------------------------
+\endpreamble
+\usedir{tex/latex/pes}
+\generate{
+  \file{\jobname.sty}{\from{\jobname.dtx}{package}}
+}
+%</install>
+%<install>\endbatchfile
+%<*internal>
+\usedir{source/latex/pes}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\nopreamble\nopostamble
+\usedir{doc/latex/pes}
+\generate{
+  \file{README.md}{\from{\jobname.dtx}{readme}}
+}
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+%<*driver|package>
+\RequirePackage{xparse}
+%</driver|package>
+%<*driver>
+\documentclass[full]{l3doc}
+\usepackage{pes}
+\usepackage[final]{listings}
+
+\DoNotIndex{
+  \addplot,
+  \axisdefaultheight,
+  \axisdefaultwidth,
+  
+  \begin,
+  
+  \caption,
+  \centering,
+  
+  \DeclareSIUnit,
+  \draw,
+  
+  \end,
+  
+  \Hartree,
+  
+  \IfValueT,
+  
+  \keys_define:nn,
+  \keys_set:nn,
+  
+  \label,
+  
+  \NewDocumentCommand,
+  \NewDocumentEnvironment,
+  \node,
+  
+  \pgfplotsset,
+  \ProcessKeysOptions,
+  \ProvidesExplPackage,
+  
+  \RequirePackage,
+  
+  \si,
+  
+  \tikzset,
+  \tl_if_empty:NTF,
+  \tl_if_eq:NNTF,
+  \tl_set_eq:NN,
+}
+
+\begin{document}
+  \DocInput{\jobname.dtx}
+\end{document}
+%</driver>
+% \fi
+% 
+%\makeatletter 
+% 
+%^^A For creating examples with nice highlighting of code, and so
+%^^A on; based on the system used in the listings source (lstsample).
+%\lst@RequireAspects{writefile}
+%\newsavebox{\LaTeXdemo@box}
+%\lstnewenvironment{LaTeXdemo}[1][code and example]{^^A
+%  \global\let\lst@intname\@empty
+%  \expandafter\let\expandafter\LaTeXdemo@end
+%    \csname LaTeXdemo@#1@end\endcsname
+%  \@nameuse{LaTeXdemo@#1}^^A
+%}{^^A
+%  \LaTeXdemo@end
+%}
+%\newcommand*\LaTeXdemo@new[3]{^^A
+%  \expandafter\newcommand\expandafter*\expandafter
+%    {\csname LaTeXdemo@#1\endcsname}{#2}^^A
+%  \expandafter\newcommand\expandafter*\expandafter
+%    {\csname LaTeXdemo@#1@end\endcsname}{#3}^^A
+%}
+%\newcommand*\LaTeXdemo@common{^^A
+%  \setkeys{lst}{
+%    basicstyle   = \small\ttfamily,
+%    basewidth    = 0.51em,
+%    gobble       = 3,
+%    keywordstyle = \color{blue},
+%    language     = [LaTeX]{TeX},
+%    moretexcs    = {
+%      bibnote       ,
+%      bibnotemark   ,
+%      bibnotesetup  ,
+%      bibnotetext   ,
+%      printbibnotes
+%    }
+%  }^^A 
+%}
+%\newcommand*\LaTeXdemo@input{^^A
+%  \MakePercentComment
+%  \catcode`\^^M=10\relax
+%  \small
+%  \begingroup
+%    \setkeys{lst}{
+%      SelectCharTable=\lst@ReplaceInput{\^\^I}{\lst@ProcessTabulator}
+%    }^^A
+%    \leavevmode 
+%      \input{\jobname.tmp}^^A
+%  \endgroup
+%  \MakePercentIgnore
+%}
+%\LaTeXdemo@new{code and example}{^^A
+%  \setbox\LaTeXdemo@box=\hbox\bgroup
+%    \lst@BeginAlsoWriteFile{\jobname.tmp}^^A
+%    \LaTeXdemo@common
+%}{^^A
+%    \lst@EndWriteFile
+%  \egroup
+%  \begin{center}
+%    \ifdim\wd\LaTeXdemo@box>0.48\linewidth\relax
+%      \hbox to\linewidth{\box\LaTeXdemo@box\hss}^^A
+%        \begin{minipage}{\linewidth}
+%          \LaTeXdemo@input
+%        \end{minipage}
+%    \else
+%      \begin{minipage}{0.48\linewidth}
+%        \LaTeXdemo@input
+%      \end{minipage}
+%      \hfill
+%      \begin{minipage}{0.48\linewidth}
+%        \hbox to\linewidth{\box\LaTeXdemo@box\hss}^^A
+%      \end{minipage}
+%    \fi
+%  \end{center}
+%}
+%\LaTeXdemo@new{code only}{^^A
+%  \LaTeXdemo@common
+%}{^^A
+%}
+%
+%\providecommand*\opt[1]{\texttt{#1}}
+%
+%\makeatother
+% 
+%\GetFileInfo{\jobname.sty} 
+% 
+%\changes{v1.0}{<+date+>}{Initial public release}
+%
+%\title{^^A
+%  \pkg{pes} --- Potential energy surface diagrams^^A
+%    \thanks{^^A
+%      This file describes version \fileversion, last revised 
+%      \filedate.^^A
+%    }^^A
+%}
+%\author{^^A
+%  Sverre L\o yland\thanks{Contact: \url{https://github.com/sverl/pes}}^^A
+%}
+%\date{Released \filedate}
+%
+%\maketitle
+%
+%\begin{abstract}
+% The \pkg{pes} package aims to make it easy to draw potential energy surface diagrams while being highly customizable end extendable.
+% The package defines a \env{pes} environment in which the \cs{level} and \cs{edge} macros work.
+% 
+%\end{abstract}
+%
+%\tableofcontents
+%
+%\begin{documentation}
+%
+%\section{Using the package}
+%
+%\subsection{Package loading and package options}
+%
+%\DescribeOption {env}
+%\DescribeOption {width}
+%\DescribeOption {height}
+%\DescribeOption {xlabel}
+%\DescribeOption {ylabel}
+% The package is loaded normally using
+%\begin{LaTeXdemo}[code only]
+%  \usepackage{pes}
+%\end{LaTeXdemo}
+% The packages can take a series of options.
+% Every package option is locally overridable by environment options in the \env{pes} environment.
+% The options sets the default values for the \env{pes} environment options.
+% See Section~\ref{sec:env} for more details on each option.
+%
+%\subsection{The \env{pes} environment}
+%\label{sec:env}
+%
+%\DescribeEnv {pes}
+% This package provides the \env{pes} environment to draw the potential energy surface diagrams.
+% The environment draws approperiate axis and allows for using the \cs{level} and \cs{edge} macros to draw energy levels (eg. ground states and transition states) and connecting edges between the levels respectively.
+%
+%\DescribeOption {env}
+% The environment consists actually of an outer \env{figure} environment with a \cs[no-index]{centering} macro.
+% This outer environment can be changed by using the \opt{env} option, eg. the \env{sidewaysfigure} environment from the \pkg{rotating} package.
+%\begin{LaTeXdemo}[code only]
+%  \usepackage{rotating}
+%  \begin{pes}[env=sidewaysfigure]
+%    ...
+%  \end{pes}
+%\end{LaTeXdemo}
+% Suppling |none| to the \opt{env} option removes the floating \env{figure} environment and the \cs[no-index]{centering} macro.
+%
+%\DescribeOption {caption}
+%\DescribeOption {label}
+% The outer environment can have a caption and a label as is common with \env{figure} environments.
+% These can be specified using the \opt{caption} and \opt{label} options.
+%
+%\begin{LaTeXdemo}[code only]
+%  \begin{pes}[caption={This is a potential energy surface},
+%              label={fig:pes}]
+%    ...
+%  \end{pes}
+%\end{LaTeXdemo}
+%
+%\DescribeOption {width}
+%\DescribeOption {height}
+% The \opt{width} and \opt{height} options specify the axis's width and height, respectively.
+%
+%\DescribeOption {xlabel}
+%\DescribeOption {ylabel}
+% The \opt{xlabel} and \opt{ylabel} specify the $x$ and $y$ axis's labels, respectively.
+%
+%\DescribeOption {zero}
+% All the levels in the \env{pes} environment can be shifted by the \opt{zero} option.
+%
+% Inside the outer environment is a \pkg{tikz} \env{tikzpicture} environment with a \pkg{pgfplots} \env{axis} environment with approperiate options.
+% When macros are used inside the \env{pes} environment, they are placed inside the \env{axis} environment so other \pkg{tikz}, \pkg{pgf}, \pkg{pgfplots} etc. macros can be used as well.
+% If you want to use the these functions, you should study the source code of the package to interact correctly with its elements.
+%
+%\begin{function}{\level}
+%\begin{syntax}
+%  \cs{level} \marg{name} \marg{$x$ coordinate} \marg{$y$ coordinate} \oarg{graphics} 
+%\end{syntax}
+% The \cs{level} macro has to be used inside the \env{pes} environment.
+% The macro takes the name, $x$ coordinate and $y$ coordinate as arguments with an optional fourth argument for displaying a graphic, eg. a molecular structure.
+%\end{function}
+%
+%\begin{function}{\edge}
+%\begin{syntax}
+%   \cs{edge} \marg{left level} \marg{right level} 
+%\end{syntax}
+% The \cs{edge} macro has to be used inside the \env{pes} environment.
+% The macro takes the left of the left level and right level as arguments.
+%\end{function}
+%
+%\section{Complete example}
+%
+%\begin{LaTeXdemo}
+%  \begin{pes}[
+%      env=none, 
+%      width=\textwidth,
+%      xlabel=reaction extent,
+%      ylabel=$\Delta H/\si{\joule}$,
+%      zero=10
+%    ]
+%
+%    \level{GS1}{0}{10}
+%    \level{GS2}{2}{5}
+%    \level{GS3}{2}{0}
+%
+%    \level{TS1-2}{1}{15}
+%    \level{TS1-3}{1}{20}
+%
+%    \edge{GS1}{TS1-2}
+%    \edge{TS1-2}{GS2}
+%    \edge{GS1}{TS1-3}
+%    \edge{TS1-3}{GS3}
+%
+%  \end{pes}
+%\end{LaTeXdemo}
+%
+%\end{documentation}
+%
+%\begin{implementation}
+%
+%\section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<@@=pes>
+%    \end{macrocode}
+%    
+% Version data and required packages and setup.
+%    \begin{macrocode}
+\ProvidesExplPackage
+  {pes} {<+date+>} {1.0}
+  {Potential energy surface diagrams}
+
+\RequirePackage{siunitx}
+\DeclareSIUnit[number-unit-product = {}] \Hartree {Ha}
+
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.15}
+%    \end{macrocode} 
+%
+% \subsection{Package options}
+%
+% The package takes a series of options which becomes the default for each environment unless specified in the specific environment.
+%
+%\begin{macro}{\@@_env}
+%\begin{macro}{\@@_width}
+%\begin{macro}{\@@_height}
+%\begin{macro}{\@@_xlabel}
+%\begin{macro}{\@@_ylabel}
+%    \begin{macrocode}
+\keys_define:nn {pes} {
+  env .tl_set:N = \@@_env,
+  env .initial:n = {figure},
+
+  width .tl_set:N = \@@_width,
+  width .initial:n = {\axisdefaultwidth},
+
+  height .tl_set:N = \@@_height,
+  height .initial:n = {\axisdefaultheight},
+
+  xlabel .tl_set:N = \@@_xlabel,
+  xlabel .initial:n = {reaction~coordinate},
+
+  ylabel .tl_set:N = \@@_ylabel,
+  ylabel .initial:n = {$E/\si{\Hartree}$},    
+}
+\ProcessKeysOptions{pes}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%
+% \subsection{Environment options}
+%
+% The environments takes series of options to specify the styles.
+% If the options are already defined in the package environment, they will be overridden inside the specific environment.
+%
+%\begin{macro}{\@@_env}
+%\begin{macro}{\@@_width}
+%\begin{macro}{\@@_height}
+%\begin{macro}{\@@_xlabel}
+%\begin{macro}{\@@_ylabel}
+%\begin{macro}{\@@_caption}
+%\begin{macro}{\@@_label}
+%\begin{macro}{\@@_zero}
+%    \begin{macrocode}
+\keys_define:nn {pes/env} {
+  env .choice:,
+  env / none .code:n = { \tl_set_eq:NN \@@_env \c_@@_env_none },
+  env / .code:n = { \tl_set_eq:NN \@@_env figure },
+  env / unknown .code:n = { \tl_set_eq:NN \@@_env #1 },
+  
+  width .tl_set:N = \@@_width,
+  width .default:n = {\axisdefaultwidth},
+  
+  height .tl_set:N = \@@_height,
+  height .default:n = {\axisdefaultheight},
+  
+  xlabel .tl_set:N = \@@_xlabel,
+  xlabel .default:n = {reaction~coordinate},
+  
+  ylabel .tl_set:N = \@@_ylabel,
+  ylabel .default:n = {$E/\si{\Hartree}$},
+  
+  caption .tl_set:N = \@@_caption,
+  
+  label .tl_set:N = \@@_label,
+  
+  zero .tl_set:N = \@@_zero,
+  zero .initial:n = {0},
+}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%
+%\begin{environment}{pes}
+% The pes environment
+%    \begin{macrocode}
+\NewDocumentEnvironment{pes}{O{}}{   
+  \keys_set:nn {pes/env}{#1}
+  
+  \tl_if_eq:NNTF \@@_env \@@_env_none {} {
+    \begin{\@@_env}
+    \centering
+  }
+    \begin{tikzpicture}
+    \begin{axis}[width=\@@_width,
+    height=\@@_height,
+    axis~lines=left,
+    enlarge~x~limits=0.2,
+    enlarge~y~limits=0.2,
+    xlabel=\@@_xlabel,
+    ylabel=\@@_ylabel,
+    xmajorticks=false]
+  }{
+    \end{axis}
+    \end{tikzpicture}
+    
+    \tl_if_empty:NF \@@_caption {\caption{\@@_caption}}
+    \tl_if_empty:NF \@@_label {\label{\@@_label}}
+    
+    \tl_if_eq:NNTF \@@_env \@@_env_none {} {
+      \end{\@@_env}
+  	}
+}
+%    \end{macrocode}
+%\end{environment}
+%
+%\begin{macro}{\level}
+% Draw a level by plotting a point at the desired coordinate, drawing a horizontal line, adding the label underneath and optionally adding a graphic above.
+% The first argument is the label, the second is the $x$-coordinate, the third is the $y$-coordinate and the fourth is an optional graphic.
+% The \texttt{coord}, \texttt{level}, \texttt{levelline} and \texttt{levellabel} styles specify the styles of the level.
+%    \begin{macrocode}
+\tikzset{coord/.style={mark=none}}
+\tikzset{level/.style={minimum~width=8mm}}
+\tikzset{levelline/.style={ultra~thick}}
+\tikzset{levellabel/.style={node~distance=1em}}
+\NewDocumentCommand{\level}{mmmo}{
+  \addplot[coord]coordinates{(#2,#3-\@@_zero)}
+  node(#1)[level]{}
+  \IfValueT{#4}{
+    node[graphics]{#4}
+  };
+  \draw[levelline](#1.west)--(#1.east);
+  \node[levellabel,below~of=#1]{#1};
+}
+%    \end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\edge}
+% Draw an edge between two levels.
+% The arguments are the names of the leftmost and rightmost levels respectively.
+% The style is specified by the \texttt{edge} style.
+%    \begin{macrocode}
+\tikzset{edge/.style={}}
+\NewDocumentCommand{\edge}{mm}{    
+  \draw[edge](#1.east)--(#2.west);
+}
+%    \end{macrocode}
+%\end{macro}      
+%    
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+%\end{implementation}
+%
+%\PrintChanges
+%\PrintIndex
